@@ -51,7 +51,10 @@ const STATUS_STYLE: Record<Person['status'], { bg: string; color: string; border
 export default function PersonCard({ person, companyName, lastContactDate }: PersonCardProps) {
   const ringP = computeRingP(lastContactDate, person.cadence_days)
   const dashOffset = ringP !== null ? RING_CIRCUMFERENCE * (1 - ringP) : 0
-  const initials = `${person.first_name[0]}${person.last_name[0]}`.toUpperCase()
+  const initials = [person.first_name[0], person.last_name[0]]
+  .filter(Boolean)
+  .join('')
+  .toUpperCase() || '?'
   const nextReachOut = formatDate(person.next_reach_out_date)
   const { bg, color, border } = STATUS_STYLE[person.status]
 
