@@ -108,6 +108,7 @@ export type Database = {
           interaction_date: string
           notes: string | null
           person_id: string
+          title: string | null
           type: Database["public"]["Enums"]["interaction_type"]
           user_id: string
         }
@@ -117,6 +118,7 @@ export type Database = {
           interaction_date: string
           notes?: string | null
           person_id: string
+          title?: string | null
           type: Database["public"]["Enums"]["interaction_type"]
           user_id: string
         }
@@ -126,6 +128,7 @@ export type Database = {
           interaction_date?: string
           notes?: string | null
           person_id?: string
+          title?: string | null
           type?: Database["public"]["Enums"]["interaction_type"]
           user_id?: string
         }
@@ -171,6 +174,7 @@ export type Database = {
       }
       persons: {
         Row: {
+          cadence_days: number | null
           company_id: string | null
           created_at: string
           email: string | null
@@ -199,6 +203,7 @@ export type Database = {
           what_i_can_do_for_them: string | null
         }
         Insert: {
+          cadence_days?: number | null
           company_id?: string | null
           created_at?: string
           email?: string | null
@@ -227,6 +232,7 @@ export type Database = {
           what_i_can_do_for_them?: string | null
         }
         Update: {
+          cadence_days?: number | null
           company_id?: string | null
           created_at?: string
           email?: string | null

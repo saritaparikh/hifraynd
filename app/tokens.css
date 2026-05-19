@@ -1,0 +1,261 @@
+/* =========================================================
+   Kili Design System — colors, type, spacing, radii, shadows
+   ========================================================= */
+
+/* Fonts: loaded via Google Fonts in consuming HTML.
+   If a project has its own font loader, import these families:
+     - Fraunces (Latin display)
+     - Nunito (Latin body)
+     - Noto Sans Malayalam (Malayalam body/UI)
+     - Baloo Chettan 2 (Malayalam display)
+*/
+
+:root {
+  /* ---------- Color: brand ---------- */
+  --ochre-50:  #FDF4E6;
+  --ochre-100: #FAE6C4;
+  --ochre-200: #F5CF93;
+  --ochre-300: #EFB460;
+  --ochre-400: #E99948;
+  --ochre-500: #E8833A; /* primary */
+  --ochre-600: #C96A28;
+  --ochre-700: #9C4F1C;
+  --ochre-800: #6F3612;
+
+  --red-50:   #FBECE9;
+  --red-100:  #F5CBC4;
+  --red-300:  #DB7D72;
+  --red-500:  #B8342A; /* temple red */
+  --red-600:  #95241C;
+  --red-700:  #6E1812;
+
+  --green-50:  #EEF3E5;
+  --green-100: #D5E1BA;
+  --green-300: #98B472;
+  --green-500: #5A7A3E; /* palm green */
+  --green-600: #456030;
+  --green-700: #304421;
+
+  --gold-500: #D9A441;
+  --gold-300: #E8C27A;
+
+  /* ---------- Color: neutrals (warm cocoa) ---------- */
+  --cream:     #FAF4E8; /* page bg */
+  --cream-2:   #FFFBF1; /* card bg */
+  --cream-3:   #F3EAD5; /* subtle contrast */
+  --sand:      #E6D9BE; /* dividers */
+  --khaki:     #B9A982;
+  --cocoa-300: #8C7A5C;
+  --cocoa-500: #5C4A34;
+  --cocoa-700: #36291A;
+  --cocoa-900: #1F1A12; /* primary text */
+  --white:     #FFFFFF;
+  --black:     #000000;
+
+  /* ---------- Color: semantic ---------- */
+  --fg-1: var(--cocoa-900); /* primary text */
+  --fg-2: var(--cocoa-500); /* secondary text */
+  --fg-3: var(--cocoa-300); /* tertiary / hints / transliteration */
+  --fg-on-primary: var(--cream-2);
+
+  --bg-page:    var(--cream);
+  --bg-card:    var(--cream-2);
+  --bg-subtle:  var(--cream-3);
+  --bg-inverse: var(--cocoa-900);
+
+  --border-soft:     var(--sand);
+  --border-strong:   var(--khaki);
+  --border-focus:    var(--ochre-500);
+
+  --color-primary:      var(--ochre-500);
+  --color-primary-hover:var(--ochre-600);
+  --color-accent:       var(--red-500);
+  --color-success:      var(--green-500);
+  --color-warning:      var(--gold-500);
+  --color-error:        #C14A3D;
+  --color-info:         var(--red-500);
+
+  /* ---------- Typography ---------- */
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body:    "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-ml-body: "Noto Sans Malayalam", "Nunito", sans-serif;
+  --font-ml-display: "Baloo Chettan 2", "Noto Sans Malayalam", serif;
+
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semi:    600;
+  --fw-bold:    700;
+  --fw-black:   900;
+
+  /* Type scale (display sizes for mobile-first) */
+  --text-xs:    12px;
+  --text-sm:    14px;
+  --text-base:  16px;
+  --text-md:    18px;
+  --text-lg:    20px;
+  --text-xl:    24px;
+  --text-2xl:   30px;
+  --text-3xl:   38px;
+  --text-4xl:   48px;
+  --text-5xl:   64px;
+  --text-6xl:   88px;
+
+  --lh-tight:   1.1;
+  --lh-snug:    1.25;
+  --lh-normal:  1.45;
+  --lh-relaxed: 1.6;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+
+  /* ---------- Spacing (4px base) ---------- */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-7:  32px;
+  --space-8:  40px;
+  --space-9:  56px;
+  --space-10: 72px;
+  --space-11: 96px;
+
+  /* ---------- Radii ---------- */
+  --radius-sm:   8px;
+  --radius-md:   16px;
+  --radius-lg:   24px;
+  --radius-xl:   32px;
+  --radius-2xl:  40px;
+  --radius-full: 999px;
+
+  /* ---------- Shadows (warm cocoa, not black) ---------- */
+  --shadow-sm: 0 2px 4px rgba(54, 41, 26, 0.06);
+  --shadow-md: 0 4px 16px rgba(54, 41, 26, 0.10);
+  --shadow-lg: 0 12px 32px rgba(54, 41, 26, 0.14);
+  --shadow-xl: 0 24px 56px rgba(54, 41, 26, 0.18);
+  --shadow-inner: inset 0 2px 6px rgba(54, 41, 26, 0.12);
+  --shadow-focus: 0 0 0 3px rgba(232, 131, 58, 0.45);
+
+  /* ---------- Motion ---------- */
+  --ease-back:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out:    cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.6, 1);
+
+  --dur-micro: 180ms;
+  --dur-std:   280ms;
+  --dur-entry: 420ms;
+
+  /* ---------- Sizes ---------- */
+  --touch-min: 56px;
+  --btn-h: 64px;
+  --btn-h-sm: 48px;
+}
+
+/* =========================================================
+   Semantic element styles
+   Include colors_and_type.css and these defaults will apply.
+   ========================================================= */
+
+html, body {
+  background: var(--bg-page);
+  color: var(--fg-1);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--lh-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, .h1 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semi);
+  font-size: var(--text-4xl);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-1);
+  margin: 0;
+}
+h2, .h2 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semi);
+  font-size: var(--text-3xl);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-1);
+  margin: 0;
+}
+h3, .h3 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semi);
+  font-size: var(--text-2xl);
+  line-height: var(--lh-snug);
+  color: var(--fg-1);
+  margin: 0;
+}
+h4, .h4 {
+  font-family: var(--font-body);
+  font-weight: var(--fw-bold);
+  font-size: var(--text-xl);
+  line-height: var(--lh-snug);
+  color: var(--fg-1);
+  margin: 0;
+}
+h5, .h5 {
+  font-family: var(--font-body);
+  font-weight: var(--fw-bold);
+  font-size: var(--text-lg);
+  line-height: var(--lh-snug);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+p, .p {
+  font-family: var(--font-body);
+  font-weight: var(--fw-regular);
+  font-size: var(--text-base);
+  line-height: var(--lh-relaxed);
+  color: var(--fg-1);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.p-muted { color: var(--fg-2); }
+.p-hint  { color: var(--fg-3); font-size: var(--text-sm); }
+
+small, .caption {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--fg-2);
+  line-height: var(--lh-normal);
+}
+
+/* Malayalam text — applied when lang="ml" */
+:lang(ml), .ml {
+  font-family: var(--font-ml-body);
+  font-size: 1.08em; /* ml typically smaller x-height */
+  line-height: 1.55;
+}
+.ml-display, h1:lang(ml), h2:lang(ml) {
+  font-family: var(--font-ml-display);
+  font-weight: var(--fw-semi);
+}
+
+/* Transliteration helper — pairs with ml word, muted */
+.translit {
+  font-family: var(--font-body);
+  font-size: 0.82em;
+  color: var(--fg-3);
+  font-style: normal;
+  letter-spacing: var(--tracking-wide);
+}
+
+/* Link */
+a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1.5px;
+}
+a:hover { color: var(--color-primary-hover); }
