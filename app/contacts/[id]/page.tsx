@@ -108,6 +108,20 @@ export default async function ContactDetailPage({
             Log interaction
           </Link>
           <Link
+            href={`/contacts/${person.id}/deliveries/new`}
+            style={{
+              padding: 'var(--space-2) var(--space-4)',
+              fontSize: 'var(--text-sm)',
+              fontWeight: 'var(--fw-medium)',
+              background: 'var(--bg-subtle)',
+              color: 'var(--fg-1)',
+              borderRadius: 'var(--radius-sm)',
+              textDecoration: 'none',
+            }}
+          >
+            Add delivery
+          </Link>
+          <Link
             href={`/contacts/${person.id}/edit`}
             style={{ fontSize: 'var(--text-sm)', color: 'var(--color-primary)' }}
           >
