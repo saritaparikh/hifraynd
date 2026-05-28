@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { STATUS_LABEL, STATUS_STYLE, formatDate } from '@/lib/constants/person'
 import type { Database } from '@/lib/types/database.types'
 
 type Person = Database['public']['Tables']['persons']['Row']
@@ -22,31 +23,6 @@ function ringColor(ringP: number): string {
   if (ringP >= 0.5) return 'var(--green-500)'
   if (ringP >= 0.2) return 'var(--gold-500)'
   return 'var(--red-500)'
-}
-
-function formatDate(dateStr: string | null): string | null {
-  if (!dateStr) return null
-  // Parse as local date to avoid UTC-shift artifacts
-  const [year, month, day] = dateStr.split('-').map(Number)
-  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
-}
-
-const STATUS_LABEL: Record<Person['status'], string> = {
-  active:    'Active',
-  nurture:   'Nurture',
-  dormant:   'Dormant',
-  potential: 'Potential',
-}
-
-const STATUS_STYLE: Record<Person['status'], { bg: string; color: string; border: string }> = {
-  active:    { bg: 'var(--green-50)',  color: 'var(--green-600)', border: 'var(--green-300)' },
-  nurture:   { bg: 'var(--gold-300)', color: 'var(--cocoa-700)', border: 'var(--gold-500)' },
-  dormant:   { bg: 'var(--cream-3)',  color: 'var(--fg-2)',      border: 'var(--sand)' },
-  potential: { bg: 'var(--ochre-50)', color: 'var(--ochre-700)', border: 'var(--ochre-300)' },
 }
 
 export default function PersonCard({ person, companyName, lastContactDate }: PersonCardProps) {

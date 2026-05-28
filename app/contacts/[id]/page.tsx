@@ -4,44 +4,12 @@ import { createClient } from '@/lib/supabase/server'
 import { getPersonById } from '@/lib/data/persons'
 import { getCompanyById } from '@/lib/data/companies'
 import { getInteractionsByPerson } from '@/lib/data/interactions'
-import type { Database } from '@/lib/types/database.types'
-
-type Person = Database['public']['Tables']['persons']['Row']
-type InteractionType = Database['public']['Enums']['interaction_type']
-
-const INTERACTION_TYPE_LABEL: Record<InteractionType, string> = {
-  in_person: 'In Person',
-  call: 'Call',
-  email: 'Email',
-  other: 'Other',
-}
-
-const STATUS_LABEL: Record<Person['status'], string> = {
-  active: 'Active',
-  nurture: 'Nurture',
-  dormant: 'Dormant',
-  potential: 'Potential',
-}
-
-const STATUS_STYLE: Record<
-  Person['status'],
-  { bg: string; color: string; border: string }
-> = {
-  active: { bg: 'var(--green-50)', color: 'var(--green-600)', border: 'var(--green-300)' },
-  nurture: { bg: 'var(--gold-300)', color: 'var(--cocoa-700)', border: 'var(--gold-500)' },
-  dormant: { bg: 'var(--cream-3)', color: 'var(--fg-2)', border: 'var(--sand)' },
-  potential: { bg: 'var(--ochre-50)', color: 'var(--ochre-700)', border: 'var(--ochre-300)' },
-}
-
-function formatDate(dateStr: string | null): string | null {
-  if (!dateStr) return null
-  const [year, month, day] = dateStr.split('-').map(Number)
-  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
-}
+import {
+  STATUS_LABEL,
+  STATUS_STYLE,
+  INTERACTION_TYPE_LABEL,
+  formatDate,
+} from '@/lib/constants/person'
 
 function formatInteractionDate(dateStr: string): string {
   const [year, month, day] = dateStr.split('-').map(Number)
