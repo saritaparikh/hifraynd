@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { Database } from '@/lib/types/database.types'
 
 type Person = Database['public']['Tables']['persons']['Row']
@@ -59,6 +60,10 @@ export default function PersonCard({ person, companyName, lastContactDate }: Per
   const { bg, color, border } = STATUS_STYLE[person.status]
 
   return (
+    <Link
+      href={`/contacts/${person.id}`}
+      style={{ textDecoration: 'none', color: 'inherit' }}
+    >
     <article
       className="flex items-center gap-4"
       style={{
@@ -176,5 +181,6 @@ export default function PersonCard({ person, companyName, lastContactDate }: Per
         )}
       </div>
     </article>
+    </Link>
   )
 }
