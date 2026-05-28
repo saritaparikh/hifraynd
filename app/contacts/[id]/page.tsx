@@ -103,12 +103,28 @@ export default async function ContactDetailPage({
         >
           ← Back to contacts
         </Link>
-        <Link
-          href={`/contacts/${person.id}/edit`}
-          style={{ fontSize: 'var(--text-sm)', color: 'var(--color-primary)' }}
-        >
-          Edit
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/contacts/${person.id}/interactions/new`}
+            style={{
+              padding: 'var(--space-2) var(--space-4)',
+              fontSize: 'var(--text-sm)',
+              fontWeight: 'var(--fw-medium)',
+              background: 'var(--bg-subtle)',
+              color: 'var(--fg-1)',
+              borderRadius: 'var(--radius-sm)',
+              textDecoration: 'none',
+            }}
+          >
+            Log interaction
+          </Link>
+          <Link
+            href={`/contacts/${person.id}/edit`}
+            style={{ fontSize: 'var(--text-sm)', color: 'var(--color-primary)' }}
+          >
+            Edit
+          </Link>
+        </div>
       </div>
 
       <div
