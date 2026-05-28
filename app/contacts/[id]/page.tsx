@@ -3,9 +3,18 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getPersonById } from '@/lib/data/persons'
 import { getCompanyById } from '@/lib/data/companies'
+import { getInteractionsByPerson } from '@/lib/data/interactions'
 import type { Database } from '@/lib/types/database.types'
 
 type Person = Database['public']['Tables']['persons']['Row']
+type InteractionType = Database['public']['Enums']['interaction_type']
+
+const INTERACTION_TYPE_LABEL: Record<InteractionType, string> = {
+  in_person: 'In Person',
+  call: 'Call',
+  email: 'Email',
+  other: 'Other',
+}
 
 const STATUS_LABEL: Record<Person['status'], string> = {
   active: 'Active',
@@ -28,6 +37,16 @@ function formatDate(dateStr: string | null): string | null {
   if (!dateStr) return null
   const [year, month, day] = dateStr.split('-').map(Number)
   return new Date(year, month - 1, day).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
+
+function formatInteractionDate(dateStr: string): string {
+  const [year, month, day] = dateStr.split('-').map(Number)
+  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
+    weekday: 'short',
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -80,6 +99,8 @@ export default async function ContactDetailPage({
     ? await getCompanyById(person.company_id, user!.id)
     : null
   const companyName = company?.name ?? null
+
+  const interactions = await getInteractionsByPerson(person.id, user!.id)
 
   const status = STATUS_STYLE[person.status]
   const titleLine = [person.title, companyName].filter(Boolean).join(' · ')
@@ -204,6 +225,99 @@ export default async function ContactDetailPage({
           <Field label="Cadence">Every {person.cadence_days} days</Field>
         )}
       </div>
+
+      <section style={{ marginTop: 'var(--space-8)', maxWidth: '640px' }}>
+        <h2
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 'var(--text-xl)',
+            fontWeight: 'var(--fw-semi)',
+            color: 'var(--fg-1)',
+            letterSpacing: 'var(--tracking-tight)',
+            margin: 0,
+          }}
+        >
+          Interactions
+        </h2>
+
+        {interactions.length === 0 ? (
+          <p
+            style={{
+              marginTop: 'var(--space-4)',
+              fontSize: 'var(--text-base)',
+              color: 'var(--fg-2)',
+            }}
+          >
+            No interactions yet
+          </p>
+        ) : (
+          <div
+            className="flex flex-col"
+            style={{ gap: 'var(--space-3)', marginTop: 'var(--space-5)' }}
+          >
+            {interactions.map((interaction) => (
+              <article
+                key={interaction.id}
+                style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-soft)',
+                  borderRadius: 'var(--radius-md)',
+                  boxShadow: 'var(--shadow-sm)',
+                  padding: 'var(--space-4)',
+                }}
+              >
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span style={{ fontSize: 'var(--text-sm)', color: 'var(--fg-2)' }}>
+                    {formatInteractionDate(interaction.interaction_date)}
+                  </span>
+                  <span
+                    style={{
+                      background: 'var(--bg-subtle)',
+                      color: 'var(--fg-2)',
+                      borderRadius: 'var(--radius-full)',
+                      fontSize: 'var(--text-xs)',
+                      fontWeight: 'var(--fw-medium)',
+                      padding: '2px var(--space-2)',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {INTERACTION_TYPE_LABEL[interaction.type]}
+                  </span>
+                </div>
+
+                {interaction.title && (
+                  <div
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: 'var(--text-base)',
+                      fontWeight: 'var(--fw-semi)',
+                      color: 'var(--fg-1)',
+                      marginTop: 'var(--space-2)',
+                    }}
+                  >
+                    {interaction.title}
+                  </div>
+                )}
+
+                {interaction.notes && (
+                  <p
+                    style={{
+                      fontSize: 'var(--text-sm)',
+                      color: 'var(--fg-2)',
+                      lineHeight: 'var(--lh-relaxed)',
+                      margin: 0,
+                      marginTop: 'var(--space-2)',
+                      whiteSpace: 'pre-wrap',
+                    }}
+                  >
+                    {interaction.notes}
+                  </p>
+                )}
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
     </main>
   )
 }
