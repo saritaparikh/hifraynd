@@ -99,6 +99,13 @@ export type Database = {
             referencedRelation: "persons"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "deliveries_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "persons_with_last_contact"
+            referencedColumns: ["id"]
+          },
         ]
       }
       interactions: {
@@ -140,6 +147,13 @@ export type Database = {
             referencedRelation: "persons"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "interactions_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "persons_with_last_contact"
+            referencedColumns: ["id"]
+          },
         ]
       }
       person_tags: {
@@ -161,6 +175,13 @@ export type Database = {
             columns: ["person_id"]
             isOneToOne: false
             referencedRelation: "persons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "person_tags_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "persons_with_last_contact"
             referencedColumns: ["id"]
           },
           {
@@ -275,6 +296,13 @@ export type Database = {
             referencedRelation: "persons"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "persons_introduced_by_fkey"
+            columns: ["introduced_by"]
+            isOneToOne: false
+            referencedRelation: "persons_with_last_contact"
+            referencedColumns: ["id"]
+          },
         ]
       }
       tags: {
@@ -300,7 +328,61 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      persons_with_last_contact: {
+        Row: {
+          cadence_days: number | null
+          company_id: string | null
+          created_at: string | null
+          email: string | null
+          first_name: string | null
+          how_we_met: string | null
+          id: string | null
+          introduced_by: string | null
+          job_search_relevant: boolean | null
+          last_contact_date: string | null
+          last_name: string | null
+          linkedin_url: string | null
+          location: string | null
+          next_reach_out_date: string | null
+          personal_notes: string | null
+          phone: string | null
+          professional_notes: string | null
+          relationship_strength:
+            | Database["public"]["Enums"]["relationship_strength"]
+            | null
+          relationship_type:
+            | Database["public"]["Enums"]["relationship_type"][]
+            | null
+          status: Database["public"]["Enums"]["contact_status"] | null
+          title: string | null
+          updated_at: string | null
+          user_id: string | null
+          what_i_can_do_for_them: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "persons_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "persons_introduced_by_fkey"
+            columns: ["introduced_by"]
+            isOneToOne: false
+            referencedRelation: "persons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "persons_introduced_by_fkey"
+            columns: ["introduced_by"]
+            isOneToOne: false
+            referencedRelation: "persons_with_last_contact"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       [_ in never]: never

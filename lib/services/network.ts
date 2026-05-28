@@ -5,13 +5,14 @@ type PersonRow = Database['public']['Tables']['persons']['Row']
 
 export type PersonWithContext = PersonRow & {
   companies: { name: string } | null
+  last_contact_date: string | null
 }
 
 export async function getPersonsWithContext(userId: string): Promise<PersonWithContext[]> {
   const supabase = await createClient()
 
   const { data, error } = await supabase
-    .from('persons')
+    .from('persons_with_last_contact')
     .select('*, companies(name)')
     .eq('user_id', userId)
     .order('last_name', { ascending: true })

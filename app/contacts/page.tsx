@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { getPersonsWithContext } from '@/lib/services/network'
 import PersonCard from '@/components/PersonCard'
+import Link from 'next/link'
 
 export default async function ContactsPage() {
   const supabase = await createClient()
@@ -29,7 +30,22 @@ export default async function ContactsPage() {
       >
         Contacts
       </h1>
-
+<Link
+  href="/contacts/new"
+  style={{
+    display: 'inline-block',
+    marginTop: 'var(--space-4)',
+    fontSize: 'var(--text-sm)',
+    fontWeight: 'var(--fw-semi)',
+    color: 'var(--fg-on-primary)',
+    background: 'var(--color-primary)',
+    padding: 'var(--space-2) var(--space-4)',
+    borderRadius: 'var(--radius-sm)',
+    textDecoration: 'none',
+  }}
+>
+  + Add Contact
+</Link>
       {persons.length === 0 ? (
         <p
           style={{
@@ -45,13 +61,20 @@ export default async function ContactsPage() {
           className="flex flex-col"
           style={{ gap: 'var(--space-3)', marginTop: 'var(--space-6)' }}
         >
-          {persons.map((person) => (
-            <PersonCard
-              key={person.id}
-              person={person}
-              companyName={person.companies?.name ?? undefined}
-            />
-          ))}
+          {persons.map((person) => {
+            const lastContactDate = person.last_contact_date
+              ? new Date(person.last_contact_date)
+              : undefined
+
+            return (
+              <PersonCard
+                key={person.id}
+                person={person}
+                companyName={person.companies?.name ?? undefined}
+                lastContactDate={lastContactDate}
+              />
+            )
+          })}
         </div>
       )}
     </main>
