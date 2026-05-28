@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getPersonsWithContext } from '@/lib/services/network'
 import PersonCard from '@/components/PersonCard'
 import Link from 'next/link'
+import { signOut } from './actions'
 
 export default async function ContactsPage() {
   const supabase = await createClient()
@@ -17,35 +18,54 @@ export default async function ContactsPage() {
         minHeight: '100vh',
       }}
     >
-      <h1
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 'var(--text-3xl)',
-          fontWeight: 'var(--fw-semi)',
-          color: 'var(--fg-1)',
-          letterSpacing: 'var(--tracking-tight)',
-          lineHeight: 'var(--lh-tight)',
-          margin: 0,
-        }}
-      >
-        Contacts
-      </h1>
-<Link
-  href="/contacts/new"
-  style={{
-    display: 'inline-block',
-    marginTop: 'var(--space-4)',
-    fontSize: 'var(--text-sm)',
-    fontWeight: 'var(--fw-semi)',
-    color: 'var(--fg-on-primary)',
-    background: 'var(--color-primary)',
-    padding: 'var(--space-2) var(--space-4)',
-    borderRadius: 'var(--radius-sm)',
-    textDecoration: 'none',
-  }}
->
-  + Add Contact
-</Link>
+      <div className="flex items-center justify-between gap-4">
+        <h1
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 'var(--text-3xl)',
+            fontWeight: 'var(--fw-semi)',
+            color: 'var(--fg-1)',
+            letterSpacing: 'var(--tracking-tight)',
+            lineHeight: 'var(--lh-tight)',
+            margin: 0,
+          }}
+        >
+          Contacts
+        </h1>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/contacts/new"
+            style={{
+              display: 'inline-block',
+              fontSize: 'var(--text-sm)',
+              fontWeight: 'var(--fw-semi)',
+              color: 'var(--fg-on-primary)',
+              background: 'var(--color-primary)',
+              padding: 'var(--space-2) var(--space-4)',
+              borderRadius: 'var(--radius-sm)',
+              textDecoration: 'none',
+            }}
+          >
+            + Add Contact
+          </Link>
+          <form action={signOut}>
+            <button
+              type="submit"
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                fontSize: 'var(--text-sm)',
+                fontFamily: 'var(--font-body)',
+                color: 'var(--fg-2)',
+                cursor: 'pointer',
+              }}
+            >
+              Sign out
+            </button>
+          </form>
+        </div>
+      </div>
       {persons.length === 0 ? (
         <p
           style={{
