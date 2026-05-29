@@ -4,12 +4,14 @@ import { createClient } from '@/lib/supabase/server'
 import { getPersonById } from '@/lib/data/persons'
 import { getCompanyById } from '@/lib/data/companies'
 import { getInteractionsByPerson } from '@/lib/data/interactions'
+import { getDeliveriesByPerson } from '@/lib/data/deliveries'
 import {
   STATUS_LABEL,
   STATUS_STYLE,
   INTERACTION_TYPE_LABEL,
   formatDate,
 } from '@/lib/constants/person'
+import { markDeliveryDone } from './deliveries/actions'
 
 function formatInteractionDate(dateStr: string): string {
   const [year, month, day] = dateStr.split('-').map(Number)
@@ -69,6 +71,9 @@ export default async function ContactDetailPage({
   const companyName = company?.name ?? null
 
   const interactions = await getInteractionsByPerson(person.id, user!.id)
+  const deliveries = (await getDeliveriesByPerson(person.id, user!.id)).filter(
+    (d) => !d.completed
+  )
 
   const status = STATUS_STYLE[person.status]
   const titleLine = [person.title, companyName].filter(Boolean).join(' · ')
@@ -207,6 +212,106 @@ export default async function ContactDetailPage({
           <Field label="Cadence">Every {person.cadence_days} days</Field>
         )}
       </div>
+
+      {deliveries.length > 0 && (
+        <section style={{ marginTop: 'var(--space-8)', maxWidth: '640px' }}>
+          <h2
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--text-xl)',
+              fontWeight: 'var(--fw-semi)',
+              color: 'var(--fg-1)',
+              letterSpacing: 'var(--tracking-tight)',
+              margin: 0,
+            }}
+          >
+            Deliveries
+          </h2>
+
+          <div
+            className="flex flex-col"
+            style={{ gap: 'var(--space-3)', marginTop: 'var(--space-5)' }}
+          >
+            {deliveries.map((delivery) => {
+              const owe = delivery.direction === 'to_them'
+              const dueDate = formatDate(delivery.due_date)
+
+              return (
+                <article
+                  key={delivery.id}
+                  className="flex items-start justify-between gap-3"
+                  style={{
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-soft)',
+                    borderRadius: 'var(--radius-md)',
+                    boxShadow: 'var(--shadow-sm)',
+                    padding: 'var(--space-4)',
+                  }}
+                >
+                  <div className="min-w-0">
+                    <span
+                      style={{
+                        background: owe ? 'var(--ochre-100)' : 'var(--green-50)',
+                        color: owe ? 'var(--ochre-700)' : 'var(--green-600)',
+                        borderRadius: 'var(--radius-full)',
+                        fontSize: 'var(--text-xs)',
+                        fontWeight: 'var(--fw-medium)',
+                        padding: '2px var(--space-2)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {owe ? 'I owe' : 'They owe'}
+                    </span>
+
+                    <div
+                      style={{
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--fg-1)',
+                        marginTop: 'var(--space-2)',
+                        whiteSpace: 'pre-wrap',
+                      }}
+                    >
+                      {delivery.description}
+                    </div>
+
+                    {dueDate && (
+                      <div
+                        style={{
+                          fontSize: 'var(--text-xs)',
+                          color: 'var(--fg-3)',
+                          marginTop: 'var(--space-1)',
+                        }}
+                      >
+                        Due {dueDate}
+                      </div>
+                    )}
+                  </div>
+
+                  <form action={markDeliveryDone} className="shrink-0">
+                    <input type="hidden" name="delivery_id" value={delivery.id} />
+                    <input type="hidden" name="person_id" value={person.id} />
+                    <button
+                      type="submit"
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        fontSize: 'var(--text-xs)',
+                        fontFamily: 'var(--font-body)',
+                        color: 'var(--fg-2)',
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      Mark done
+                    </button>
+                  </form>
+                </article>
+              )
+            })}
+          </div>
+        </section>
+      )}
 
       <section style={{ marginTop: 'var(--space-8)', maxWidth: '640px' }}>
         <h2
