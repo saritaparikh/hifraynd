@@ -11,7 +11,7 @@ import {
   INTERACTION_TYPE_LABEL,
   formatDate,
 } from '@/lib/constants/person'
-import { markDeliveryDone } from './deliveries/actions'
+import { markDeliveryDone, reopenDelivery } from './deliveries/actions'
 
 function formatInteractionDate(dateStr: string): string {
   const [year, month, day] = dateStr.split('-').map(Number)
@@ -291,16 +291,36 @@ export default async function ContactDetailPage({
                   </div>
 
                   {delivery.completed ? (
-                    <span
-                      className="shrink-0"
-                      style={{
-                        fontSize: 'var(--text-xs)',
-                        color: 'var(--green-500)',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      Done ✓
-                    </span>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <span
+                        style={{
+                          fontSize: 'var(--text-xs)',
+                          color: 'var(--green-500)',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        Done ✓
+                      </span>
+                      <form action={reopenDelivery}>
+                        <input type="hidden" name="delivery_id" value={delivery.id} />
+                        <input type="hidden" name="person_id" value={person.id} />
+                        <button
+                          type="submit"
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            fontSize: 'var(--text-xs)',
+                            fontFamily: 'var(--font-body)',
+                            color: 'var(--fg-2)',
+                            cursor: 'pointer',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          Re-open
+                        </button>
+                      </form>
+                    </div>
                   ) : (
                     <form action={markDeliveryDone} className="shrink-0">
                       <input type="hidden" name="delivery_id" value={delivery.id} />
