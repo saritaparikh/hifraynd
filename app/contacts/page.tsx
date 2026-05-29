@@ -43,6 +43,16 @@ export default async function ContactsPage() {
           >
             Today
           </Link>
+          <Link
+            href="/contacts/archived"
+            style={{
+              fontSize: 'var(--text-sm)',
+              color: 'var(--fg-2)',
+              textDecoration: 'none',
+            }}
+          >
+            Archived
+          </Link>
         </div>
         <div className="flex items-center gap-4">
           <Link

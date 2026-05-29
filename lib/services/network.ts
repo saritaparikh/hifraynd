@@ -15,6 +15,7 @@ export async function getPersonsWithContext(userId: string): Promise<PersonWithC
     .from('persons_with_last_contact')
     .select('*, companies(name)')
     .eq('user_id', userId)
+    .eq('archived', false)
     .order('last_name', { ascending: true })
 
   if (error) throw new Error(`Failed to fetch persons: ${error.message}`)

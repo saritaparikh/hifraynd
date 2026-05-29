@@ -140,6 +140,7 @@ export default async function EditContactPage({
             style={fieldStyle}
           >
             <option value="potential">Potential</option>
+            <option value="planned">Planned</option>
             <option value="active">Active</option>
             <option value="nurture">Nurture</option>
             <option value="dormant">Dormant</option>

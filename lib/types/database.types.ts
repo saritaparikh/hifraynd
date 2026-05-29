@@ -195,6 +195,7 @@ export type Database = {
       }
       persons: {
         Row: {
+          archived: boolean
           cadence_days: number | null
           company_id: string | null
           created_at: string
@@ -224,6 +225,7 @@ export type Database = {
           what_i_can_do_for_them: string | null
         }
         Insert: {
+          archived?: boolean
           cadence_days?: number | null
           company_id?: string | null
           created_at?: string
@@ -253,6 +255,7 @@ export type Database = {
           what_i_can_do_for_them?: string | null
         }
         Update: {
+          archived?: boolean
           cadence_days?: number | null
           company_id?: string | null
           created_at?: string
@@ -330,6 +333,7 @@ export type Database = {
     Views: {
       persons_with_last_contact: {
         Row: {
+          archived: boolean | null
           cadence_days: number | null
           company_id: string | null
           created_at: string | null
@@ -388,7 +392,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      contact_status: "potential" | "active" | "nurture" | "dormant"
+      contact_status: "potential" | "active" | "nurture" | "dormant" | "planned"
       delivery_direction: "to_them" | "from_them"
       interaction_type: "email" | "call" | "in_person" | "other"
       relationship_strength: "strong" | "medium" | "casual"
@@ -529,7 +533,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      contact_status: ["potential", "active", "nurture", "dormant"],
+      contact_status: ["potential", "active", "nurture", "dormant", "planned"],
       delivery_direction: ["to_them", "from_them"],
       interaction_type: ["email", "call", "in_person", "other"],
       relationship_strength: ["strong", "medium", "casual"],

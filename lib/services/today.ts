@@ -31,9 +31,10 @@ export async function getTodayData(userId: string) {
 
   const { data: deliveriesData, error: deliveriesError } = await supabase
     .from('deliveries')
-    .select('*, persons(first_name, last_name)')
+    .select('*, persons!inner(first_name, last_name)')
     .eq('user_id', userId)
     .eq('completed', false)
+    .eq('persons.archived', false)
 
   if (deliveriesError) {
     throw new Error(`Failed to fetch deliveries: ${deliveriesError.message}`)
@@ -43,6 +44,7 @@ export async function getTodayData(userId: string) {
     .from('persons')
     .select('id, first_name, last_name, next_reach_out_date')
     .eq('user_id', userId)
+    .eq('archived', false)
     .or(`next_reach_out_date.is.null,next_reach_out_date.lte.${sevenDays}`)
 
   if (personsError) {

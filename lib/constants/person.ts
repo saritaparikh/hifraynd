@@ -8,6 +8,7 @@ export const STATUS_LABEL: Record<ContactStatus, string> = {
   nurture: 'Nurture',
   dormant: 'Dormant',
   potential: 'Potential',
+  planned: 'Planned',
 }
 
 export const STATUS_STYLE: Record<
@@ -18,6 +19,7 @@ export const STATUS_STYLE: Record<
   nurture: { bg: 'var(--gold-300)', color: 'var(--cocoa-700)', border: 'var(--gold-500)' },
   dormant: { bg: 'var(--cream-3)', color: 'var(--fg-2)', border: 'var(--sand)' },
   potential: { bg: 'var(--ochre-50)', color: 'var(--ochre-700)', border: 'var(--ochre-300)' },
+  planned: { bg: 'var(--ochre-50)', color: 'var(--ochre-700)', border: 'var(--ochre-300)' },
 }
 
 export const INTERACTION_TYPE_LABEL: Record<InteractionType, string> = {

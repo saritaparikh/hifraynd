@@ -12,6 +12,7 @@ import {
   formatDate,
 } from '@/lib/constants/person'
 import { markDeliveryDone, reopenDelivery } from './deliveries/actions'
+import { archiveContact } from './archive/actions'
 
 function formatInteractionDate(dateStr: string): string {
   const [year, month, day] = dateStr.split('-').map(Number)
@@ -147,6 +148,23 @@ export default async function ContactDetailPage({
           >
             Edit
           </Link>
+          <form action={archiveContact}>
+            <input type="hidden" name="person_id" value={person.id} />
+            <button
+              type="submit"
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                fontSize: 'var(--text-sm)',
+                fontFamily: 'var(--font-body)',
+                color: 'var(--fg-2)',
+                cursor: 'pointer',
+              }}
+            >
+              Archive
+            </button>
+          </form>
         </div>
       </div>
 
