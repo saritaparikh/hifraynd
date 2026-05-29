@@ -19,19 +19,31 @@ export default async function ContactsPage() {
       }}
     >
       <div className="flex items-center justify-between gap-4">
-        <h1
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'var(--text-3xl)',
-            fontWeight: 'var(--fw-semi)',
-            color: 'var(--fg-1)',
-            letterSpacing: 'var(--tracking-tight)',
-            lineHeight: 'var(--lh-tight)',
-            margin: 0,
-          }}
-        >
-          Contacts
-        </h1>
+        <div className="flex items-center gap-4">
+          <h1
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--text-3xl)',
+              fontWeight: 'var(--fw-semi)',
+              color: 'var(--fg-1)',
+              letterSpacing: 'var(--tracking-tight)',
+              lineHeight: 'var(--lh-tight)',
+              margin: 0,
+            }}
+          >
+            Contacts
+          </h1>
+          <Link
+            href="/today"
+            style={{
+              fontSize: 'var(--text-sm)',
+              color: 'var(--fg-2)',
+              textDecoration: 'none',
+            }}
+          >
+            Today
+          </Link>
+        </div>
         <div className="flex items-center gap-4">
           <Link
             href="/contacts/new"
