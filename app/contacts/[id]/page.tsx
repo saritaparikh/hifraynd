@@ -90,12 +90,28 @@ export default async function ContactDetailPage({
         className="flex items-center justify-between"
         style={{ maxWidth: '640px' }}
       >
-        <Link
-          href="/contacts"
-          style={{ fontSize: 'var(--text-sm)', color: 'var(--fg-2)' }}
-        >
-          ← Back to contacts
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/today"
+            style={{
+              fontSize: 'var(--text-sm)',
+              color: 'var(--fg-2)',
+              textDecoration: 'none',
+            }}
+          >
+            ← Today
+          </Link>
+          <Link
+            href="/contacts"
+            style={{
+              fontSize: 'var(--text-sm)',
+              color: 'var(--fg-2)',
+              textDecoration: 'none',
+            }}
+          >
+            Contacts
+          </Link>
+        </div>
         <div className="flex items-center gap-3">
           <Link
             href={`/contacts/${person.id}/interactions/new`}
