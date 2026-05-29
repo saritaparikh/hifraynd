@@ -71,9 +71,8 @@ export default async function ContactDetailPage({
   const companyName = company?.name ?? null
 
   const interactions = await getInteractionsByPerson(person.id, user!.id)
-  const deliveries = (await getDeliveriesByPerson(person.id, user!.id)).filter(
-    (d) => !d.completed
-  )
+  const deliveries = await getDeliveriesByPerson(person.id, user!.id)
+  deliveries.sort((a, b) => Number(a.completed) - Number(b.completed))
 
   const status = STATUS_STYLE[person.status]
   const titleLine = [person.title, companyName].filter(Boolean).join(' · ')
@@ -246,6 +245,7 @@ export default async function ContactDetailPage({
                     borderRadius: 'var(--radius-md)',
                     boxShadow: 'var(--shadow-sm)',
                     padding: 'var(--space-4)',
+                    opacity: delivery.completed ? 0.5 : undefined,
                   }}
                 >
                   <div className="min-w-0">
@@ -269,6 +269,9 @@ export default async function ContactDetailPage({
                         color: 'var(--fg-1)',
                         marginTop: 'var(--space-2)',
                         whiteSpace: 'pre-wrap',
+                        textDecoration: delivery.completed
+                          ? 'line-through'
+                          : undefined,
                       }}
                     >
                       {delivery.description}
@@ -287,25 +290,38 @@ export default async function ContactDetailPage({
                     )}
                   </div>
 
-                  <form action={markDeliveryDone} className="shrink-0">
-                    <input type="hidden" name="delivery_id" value={delivery.id} />
-                    <input type="hidden" name="person_id" value={person.id} />
-                    <button
-                      type="submit"
+                  {delivery.completed ? (
+                    <span
+                      className="shrink-0"
                       style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
                         fontSize: 'var(--text-xs)',
-                        fontFamily: 'var(--font-body)',
-                        color: 'var(--fg-2)',
-                        cursor: 'pointer',
+                        color: 'var(--green-500)',
                         whiteSpace: 'nowrap',
                       }}
                     >
-                      Mark done
-                    </button>
-                  </form>
+                      Done ✓
+                    </span>
+                  ) : (
+                    <form action={markDeliveryDone} className="shrink-0">
+                      <input type="hidden" name="delivery_id" value={delivery.id} />
+                      <input type="hidden" name="person_id" value={person.id} />
+                      <button
+                        type="submit"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          fontSize: 'var(--text-xs)',
+                          fontFamily: 'var(--font-body)',
+                          color: 'var(--fg-2)',
+                          cursor: 'pointer',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        Mark done
+                      </button>
+                    </form>
+                  )}
                 </article>
               )
             })}
