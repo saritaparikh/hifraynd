@@ -115,6 +115,7 @@ export type Database = {
           interaction_date: string
           notes: string | null
           person_id: string
+          resets_cadence: boolean
           title: string | null
           type: Database["public"]["Enums"]["interaction_type"]
           user_id: string
@@ -125,6 +126,7 @@ export type Database = {
           interaction_date: string
           notes?: string | null
           person_id: string
+          resets_cadence?: boolean
           title?: string | null
           type: Database["public"]["Enums"]["interaction_type"]
           user_id: string
@@ -135,6 +137,7 @@ export type Database = {
           interaction_date?: string
           notes?: string | null
           person_id?: string
+          resets_cadence?: boolean
           title?: string | null
           type?: Database["public"]["Enums"]["interaction_type"]
           user_id?: string

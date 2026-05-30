@@ -132,6 +132,37 @@ export default async function NewInteractionPage({
           />
         </div>
 
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+          <input
+            id="resets_cadence"
+            name="resets_cadence"
+            type="checkbox"
+            defaultChecked
+            style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+          />
+          <label
+            htmlFor="resets_cadence"
+            style={{
+              fontSize: 'var(--text-sm)',
+              color: 'var(--fg-1)',
+              cursor: 'pointer',
+            }}
+          >
+            Resets cadence
+          </label>
+          <span
+            title="Check this if the interaction counts as a professional touchpoint. Uncheck for personal gestures like birthdays or congratulations that shouldn't affect your reach-out schedule."
+            style={{
+              fontSize: 'var(--text-xs)',
+              color: 'var(--fg-3)',
+              cursor: 'help',
+              borderBottom: '1px dotted var(--fg-3)',
+            }}
+          >
+            ?
+          </span>
+        </div>
+
         <button
           type="submit"
           style={{

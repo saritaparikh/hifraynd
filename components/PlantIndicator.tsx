@@ -45,8 +45,8 @@ export default function PlantIndicator({
   const soilFill = state === 'overdue' ? '#8c7a5c' : '#5c4a34'
 
   return (
-    <svg width="72" height="72" viewBox="0 0 56 160" aria-hidden="true">
-      <g transform="translate(28, 8) scale(0.36)">
+    <svg width="72" height="72" viewBox="-30 18 60 135" aria-hidden="true">
+      <g>
         <path d="M-22 115 L-28 148 L28 148 L22 115 Z" fill="#c96a28" />
         <rect x="-26" y="107" width="52" height="12" rx="3" fill="#9c4f1c" />
         <ellipse cx="0" cy="107" rx="23" ry="5" fill={soilFill} />

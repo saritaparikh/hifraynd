@@ -20,6 +20,10 @@ export async function updateContact(formData: FormData) {
   const cadenceRaw = formData.get('cadence_days') as string
   const status = formData.get('status') as ContactStatus
 
+// TEMPORARY DEBUG
+  console.log('cadenceRaw:', cadenceRaw)
+  console.log('parsed:', Number.parseInt(cadenceRaw, 10))
+
   const defaultCadence: Record<ContactStatus, number | null> = {
     planned: 14,
     active: 30,
@@ -37,6 +41,8 @@ export async function updateContact(formData: FormData) {
   const next_reach_out_date =
     (formData.get('next_reach_out_date') as string) ||
     (status === 'planned' ? auto_next_reach_out : null)
+
+console.log('cadence_days being saved:', cadence_days)
 
   await updatePerson(person_id, user.id, {
     first_name: formData.get('first_name') as string,

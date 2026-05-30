@@ -66,13 +66,14 @@ export default async function ContactDetailPage({
   const person = await getPersonById(id, user!.id)
   if (!person) notFound()
 
-  const company = person.company_id
-    ? await getCompanyById(person.company_id, user!.id)
-    : null
+  const [company, interactions, deliveries] = await Promise.all([
+    person.company_id
+      ? getCompanyById(person.company_id, user!.id)
+      : Promise.resolve(null),
+    getInteractionsByPerson(person.id, user!.id),
+    getDeliveriesByPerson(person.id, user!.id),
+  ])
   const companyName = company?.name ?? null
-
-  const interactions = await getInteractionsByPerson(person.id, user!.id)
-  const deliveries = await getDeliveriesByPerson(person.id, user!.id)
   deliveries.sort((a, b) => Number(a.completed) - Number(b.completed))
 
   const status = STATUS_STYLE[person.status]

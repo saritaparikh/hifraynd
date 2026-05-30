@@ -73,6 +73,11 @@ export default async function EditContactPage({
         style={{ gap: 'var(--space-5)', maxWidth: '480px' }}
       >
         <input type="hidden" name="person_id" value={person.id} />
+        <input
+          type="hidden"
+          name="next_reach_out_date"
+          value={person.next_reach_out_date ?? ''}
+        />
 
         <div>
           <label htmlFor="first_name" style={labelStyle}>
@@ -154,27 +159,15 @@ export default async function EditContactPage({
           <input
             id="cadence_days"
             name="cadence_days"
-            type="number"
-            min="1"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             defaultValue={person.cadence_days ?? ''}
             style={fieldStyle}
           />
         </div>
 
-        <div>
-          <label htmlFor="next_reach_out_date" style={labelStyle}>
-            Next reach out date
-          </label>
-          <input
-            id="next_reach_out_date"
-            name="next_reach_out_date"
-            type="date"
-            defaultValue={person.next_reach_out_date ?? ''}
-            style={fieldStyle}
-          />
-        </div>
-
-        <div>
+<div>
           <label htmlFor="how_we_met" style={labelStyle}>
             How we met
           </label>

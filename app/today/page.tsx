@@ -1,15 +1,11 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { getTodayData } from '@/lib/services/today'
+import {
+  getTodayData,
+  type DeliveryItem,
+  type PersonTodayCard,
+} from '@/lib/services/today'
 import { formatDate } from '@/lib/constants/person'
-
-const rowStyle = {
-  background: 'var(--bg-card)',
-  border: '1px solid var(--border-soft)',
-  borderRadius: 'var(--radius-md)',
-  boxShadow: 'var(--shadow-sm)',
-  padding: 'var(--space-3)',
-}
 
 function daysOverdue(dateStr: string): number {
   const [year, month, day] = dateStr.split('-').map(Number)
@@ -19,17 +15,156 @@ function daysOverdue(dateStr: string): number {
   return Math.floor((today.getTime() - date) / 86_400_000)
 }
 
-function fullName(first?: string | null, last?: string | null): string {
-  return [first, last].filter(Boolean).join(' ')
+function DeliveryRow({
+  delivery,
+  todayStr,
+}: {
+  delivery: DeliveryItem
+  todayStr: string
+}) {
+  const owe = delivery.direction === 'to_them'
+  const isOverdue =
+    delivery.due_date !== null && delivery.due_date < todayStr
+
+  let rightText: string
+  let rightColor: string
+  if (isOverdue) {
+    rightText = `${daysOverdue(delivery.due_date!)} days overdue`
+    rightColor = 'var(--red-500)'
+  } else if (delivery.due_date) {
+    rightText = formatDate(delivery.due_date) ?? ''
+    rightColor = 'var(--fg-2)'
+  } else {
+    rightText = 'No due date'
+    rightColor = 'var(--fg-3)'
+  }
+
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center gap-2 min-w-0 flex-1">
+        <span
+          className="shrink-0"
+          style={{
+            background: owe ? 'var(--ochre-100)' : 'var(--green-50)',
+            color: owe ? 'var(--ochre-700)' : 'var(--green-600)',
+            borderRadius: 'var(--radius-full)',
+            fontSize: 'var(--text-xs)',
+            fontWeight: 'var(--fw-medium)',
+            padding: '2px var(--space-2)',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {owe ? 'I owe' : 'They owe'}
+        </span>
+        <span
+          style={{
+            fontSize: 'var(--text-sm)',
+            color: 'var(--fg-1)',
+            whiteSpace: 'pre-wrap',
+          }}
+        >
+          {delivery.description}
+        </span>
+      </div>
+      <span
+        className="shrink-0"
+        style={{
+          fontSize: 'var(--text-xs)',
+          color: rightColor,
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {rightText}
+      </span>
+    </div>
+  )
+}
+
+function ReachOutRow({ date, todayStr }: { date: string; todayStr: string }) {
+  const past = date < todayStr
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span style={{ fontSize: 'var(--text-xs)', color: 'var(--fg-3)' }}>
+        Reach out
+      </span>
+      <span
+        className="shrink-0"
+        style={{
+          fontSize: 'var(--text-xs)',
+          color: past ? 'var(--red-500)' : 'var(--fg-2)',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {past ? `${daysOverdue(date)} days overdue` : formatDate(date)}
+      </span>
+    </div>
+  )
+}
+
+function TodayCard({
+  person,
+  todayStr,
+}: {
+  person: PersonTodayCard
+  todayStr: string
+}) {
+  const hasDeliveries = person.deliveries.length > 0
+  const hasReachOut = person.next_reach_out_date !== null
+
+  return (
+    <article
+      style={{
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-soft)',
+        borderRadius: 'var(--radius-md)',
+        boxShadow: 'var(--shadow-sm)',
+        padding: 'var(--space-3)',
+      }}
+    >
+      <Link
+        href={`/contacts/${person.id}`}
+        style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 'var(--text-base)',
+          fontWeight: 'var(--fw-semi)',
+          color: 'var(--fg-1)',
+          textDecoration: 'none',
+        }}
+      >
+        {person.first_name} {person.last_name}
+      </Link>
+
+      {hasDeliveries && (
+        <div
+          className="flex flex-col"
+          style={{ marginTop: 'var(--space-2)', gap: 'var(--space-2)' }}
+        >
+          {person.deliveries.map((d) => (
+            <DeliveryRow key={d.id} delivery={d} todayStr={todayStr} />
+          ))}
+        </div>
+      )}
+
+      {hasReachOut && (
+        <div
+          style={{
+            marginTop: 'var(--space-3)',
+            paddingTop: hasDeliveries ? 'var(--space-3)' : 0,
+            borderTop: hasDeliveries ? '1px solid var(--border-soft)' : 'none',
+          }}
+        >
+          <ReachOutRow date={person.next_reach_out_date!} todayStr={todayStr} />
+        </div>
+      )}
+    </article>
+  )
 }
 
 function Section({
   title,
-  titleColor,
   children,
 }: {
   title: string
-  titleColor?: string
   children: React.ReactNode
 }) {
   return (
@@ -39,7 +174,7 @@ function Section({
           fontFamily: 'var(--font-display)',
           fontSize: 'var(--text-xl)',
           fontWeight: 'var(--fw-semi)',
-          color: titleColor ?? 'var(--fg-1)',
+          color: 'var(--fg-1)',
           letterSpacing: 'var(--tracking-tight)',
           margin: 0,
         }}
@@ -56,45 +191,19 @@ function Section({
   )
 }
 
-function PersonLink({ id, name }: { id: string; name: string }) {
-  return (
-    <Link
-      href={`/contacts/${id}`}
-      style={{
-        fontSize: 'var(--text-base)',
-        fontWeight: 'var(--fw-medium)',
-        color: 'var(--fg-1)',
-        textDecoration: 'none',
-      }}
-    >
-      {name}
-    </Link>
-  )
-}
-
-const descriptionStyle = {
-  fontSize: 'var(--text-sm)',
-  color: 'var(--fg-2)',
-  marginTop: 'var(--space-1)',
-  whiteSpace: 'pre-wrap' as const,
-}
-
 export default async function TodayPage() {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const { overdueOwed, upcomingOwed, theyOwe, reachOut } = await getTodayData(
-    user!.id
-  )
+  const data = await getTodayData(user!.id)
   const todayStr = new Date().toISOString().split('T')[0]
 
   const allEmpty =
-    overdueOwed.length === 0 &&
-    upcomingOwed.length === 0 &&
-    theyOwe.length === 0 &&
-    reachOut.length === 0
+    data.urgent.length === 0 &&
+    data.this_week.length === 0 &&
+    data.no_date.length === 0
 
   return (
     <main
@@ -142,138 +251,25 @@ export default async function TodayPage() {
         </p>
       ) : (
         <>
-          {overdueOwed.length > 0 && (
-            <Section title="Overdue — I owe" titleColor="var(--red-500)">
-              {overdueOwed.map((d) => (
-                <div
-                  key={d.id}
-                  className="flex items-center justify-between gap-3"
-                  style={rowStyle}
-                >
-                  <div className="min-w-0">
-                    <PersonLink
-                      id={d.person_id}
-                      name={fullName(d.persons?.first_name, d.persons?.last_name)}
-                    />
-                    <div style={descriptionStyle}>{d.description}</div>
-                  </div>
-                  <span
-                    className="shrink-0"
-                    style={{
-                      fontSize: 'var(--text-sm)',
-                      color: 'var(--red-500)',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {daysOverdue(d.due_date!)} days overdue
-                  </span>
-                </div>
+          {data.urgent.length > 0 && (
+            <Section title="Urgent">
+              {data.urgent.map((person) => (
+                <TodayCard key={person.id} person={person} todayStr={todayStr} />
               ))}
             </Section>
           )}
-
-          {upcomingOwed.length > 0 && (
-            <Section title="I owe them">
-              {upcomingOwed.map((d) => (
-                <div
-                  key={d.id}
-                  className="flex items-center justify-between gap-3"
-                  style={rowStyle}
-                >
-                  <div className="min-w-0">
-                    <PersonLink
-                      id={d.person_id}
-                      name={fullName(d.persons?.first_name, d.persons?.last_name)}
-                    />
-                    <div style={descriptionStyle}>{d.description}</div>
-                  </div>
-                  <span
-                    className="shrink-0"
-                    style={{
-                      fontSize: 'var(--text-sm)',
-                      color: d.due_date ? 'var(--fg-2)' : 'var(--fg-3)',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {d.due_date ? formatDate(d.due_date) : 'No due date'}
-                  </span>
-                </div>
+          {data.this_week.length > 0 && (
+            <Section title="This week">
+              {data.this_week.map((person) => (
+                <TodayCard key={person.id} person={person} todayStr={todayStr} />
               ))}
             </Section>
           )}
-
-          {theyOwe.length > 0 && (
-            <Section title="They owe me">
-              {theyOwe.map((d) => (
-                <div
-                  key={d.id}
-                  className="flex items-center justify-between gap-3"
-                  style={rowStyle}
-                >
-                  <div className="min-w-0">
-                    <PersonLink
-                      id={d.person_id}
-                      name={fullName(d.persons?.first_name, d.persons?.last_name)}
-                    />
-                    <div style={descriptionStyle}>{d.description}</div>
-                  </div>
-                  <span
-                    className="shrink-0"
-                    style={{
-                      fontSize: 'var(--text-sm)',
-                      color: d.due_date ? 'var(--fg-2)' : 'var(--fg-3)',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {d.due_date ? formatDate(d.due_date) : 'No due date'}
-                  </span>
-                </div>
+          {data.no_date.length > 0 && (
+            <Section title="No date">
+              {data.no_date.map((person) => (
+                <TodayCard key={person.id} person={person} todayStr={todayStr} />
               ))}
-            </Section>
-          )}
-
-          {reachOut.length > 0 && (
-            <Section title="Reach out">
-              {reachOut.map((person) => {
-                const due =
-                  person.next_reach_out_date !== null &&
-                  person.next_reach_out_date <= todayStr
-                return (
-                  <div
-                    key={person.id}
-                    className="flex items-center justify-between gap-3"
-                    style={rowStyle}
-                  >
-                    <PersonLink
-                      id={person.id}
-                      name={fullName(person.first_name, person.last_name)}
-                    />
-                    {person.next_reach_out_date ? (
-                      <span
-                        className="shrink-0"
-                        style={{
-                          fontSize: 'var(--text-sm)',
-                          color: due ? 'var(--red-500)' : 'var(--fg-2)',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {formatDate(person.next_reach_out_date)}
-                      </span>
-                    ) : (
-                      <span
-                        className="shrink-0"
-                        style={{
-                          fontSize: 'var(--text-sm)',
-                          color: 'var(--fg-3)',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        No date set
-                      </span>
-                    )}
-                  </div>
-                )
-              })}
             </Section>
           )}
         </>
