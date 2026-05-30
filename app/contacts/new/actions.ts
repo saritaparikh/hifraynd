@@ -21,6 +21,25 @@ export async function createContact(formData: FormData) {
   const email = (formData.get('email') as string) || null
   const title = (formData.get('title') as string) || null
   const status = formData.get('status') as ContactStatus
+  const cadenceRaw = formData.get('cadence_days') as string
+
+  const defaultCadence: Record<ContactStatus, number | null> = {
+    planned: 14,
+    active: 30,
+    potential: 30,
+    nurture: 60,
+    dormant: null,
+  }
+  const cadence_days = cadenceRaw
+    ? Number.parseInt(cadenceRaw, 10)
+    : defaultCadence[status]
+
+  const today = new Date()
+  today.setDate(today.getDate() + 5)
+  const auto_next_reach_out = today.toISOString().split('T')[0]
+  const next_reach_out_date =
+    (formData.get('next_reach_out_date') as string) ||
+    (status === 'planned' ? auto_next_reach_out : null)
 
   await createPerson({
     first_name,
@@ -28,6 +47,8 @@ export async function createContact(formData: FormData) {
     email,
     title,
     status,
+    cadence_days,
+    next_reach_out_date,
     user_id: user.id,
   })
 

@@ -18,15 +18,34 @@ export async function updateContact(formData: FormData) {
 
   const person_id = formData.get('person_id') as string
   const cadenceRaw = formData.get('cadence_days') as string
+  const status = formData.get('status') as ContactStatus
+
+  const defaultCadence: Record<ContactStatus, number | null> = {
+    planned: 14,
+    active: 30,
+    potential: 30,
+    nurture: 60,
+    dormant: null,
+  }
+  const cadence_days = cadenceRaw
+    ? Number.parseInt(cadenceRaw, 10)
+    : defaultCadence[status]
+
+  const today = new Date()
+  today.setDate(today.getDate() + 5)
+  const auto_next_reach_out = today.toISOString().split('T')[0]
+  const next_reach_out_date =
+    (formData.get('next_reach_out_date') as string) ||
+    (status === 'planned' ? auto_next_reach_out : null)
 
   await updatePerson(person_id, user.id, {
     first_name: formData.get('first_name') as string,
     last_name: formData.get('last_name') as string,
     email: (formData.get('email') as string) || null,
     title: (formData.get('title') as string) || null,
-    status: formData.get('status') as ContactStatus,
-    cadence_days: cadenceRaw ? Number.parseInt(cadenceRaw, 10) : null,
-    next_reach_out_date: (formData.get('next_reach_out_date') as string) || null,
+    status,
+    cadence_days,
+    next_reach_out_date,
     how_we_met: (formData.get('how_we_met') as string) || null,
     what_i_can_do_for_them:
       (formData.get('what_i_can_do_for_them') as string) || null,

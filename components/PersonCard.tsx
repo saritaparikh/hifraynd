@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { STATUS_LABEL, STATUS_STYLE, formatDate } from '@/lib/constants/person'
+import PlantIndicator from '@/components/PlantIndicator'
 import type { Database } from '@/lib/types/database.types'
 
 type Person = Database['public']['Tables']['persons']['Row']
@@ -10,28 +11,7 @@ interface PersonCardProps {
   lastContactDate?: Date
 }
 
-const RING_R = 24
-const RING_CIRCUMFERENCE = 2 * Math.PI * RING_R
-
-function computeRingP(lastContactDate: Date | undefined, cadenceDays: number | null): number | null {
-  if (!cadenceDays || !lastContactDate) return null
-  const daysSince = Math.floor((Date.now() - lastContactDate.getTime()) / 86_400_000)
-  return Math.max(0, 1 - daysSince / cadenceDays)
-}
-
-function ringColor(ringP: number): string {
-  if (ringP >= 0.5) return 'var(--green-500)'
-  if (ringP >= 0.2) return 'var(--gold-500)'
-  return 'var(--red-500)'
-}
-
 export default function PersonCard({ person, companyName, lastContactDate }: PersonCardProps) {
-  const ringP = computeRingP(lastContactDate, person.cadence_days)
-  const dashOffset = ringP !== null ? RING_CIRCUMFERENCE * (1 - ringP) : 0
-  const initials = [person.first_name[0], person.last_name[0]]
-  .filter(Boolean)
-  .join('')
-  .toUpperCase() || '?'
   const nextReachOut = formatDate(person.next_reach_out_date)
   const { bg, color, border } = STATUS_STYLE[person.status]
 
@@ -50,44 +30,12 @@ export default function PersonCard({ person, companyName, lastContactDate }: Per
         padding: 'var(--space-4)',
       }}
     >
-      {/* Cadence ring */}
       <div className="shrink-0">
-        <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
-          {/* Track */}
-          <circle
-            cx="28" cy="28" r={RING_R}
-            fill="none"
-            stroke="var(--sand)"
-            strokeWidth="4"
-          />
-          {/* Progress arc — omitted when no cadence or no lastContactDate */}
-          {ringP !== null && (
-            <circle
-              cx="28" cy="28" r={RING_R}
-              fill="none"
-              stroke={ringColor(ringP)}
-              strokeWidth="4"
-              strokeLinecap="round"
-              strokeDasharray={RING_CIRCUMFERENCE}
-              strokeDashoffset={dashOffset}
-              transform="rotate(-90 28 28)"
-            />
-          )}
-          {/* Initials */}
-          <text
-            x="28" y="28"
-            textAnchor="middle"
-            dominantBaseline="central"
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'var(--text-xs)',
-              fontWeight: 'var(--fw-semi)',
-              fill: 'var(--fg-2)',
-            }}
-          >
-            {initials}
-          </text>
-        </svg>
+        <PlantIndicator
+          lastContactDate={lastContactDate}
+          cadenceDays={person.cadence_days}
+          nextReachOutDate={person.next_reach_out_date}
+        />
       </div>
 
       {/* Content */}
