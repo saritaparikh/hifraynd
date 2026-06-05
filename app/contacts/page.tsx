@@ -3,12 +3,39 @@ import { getPersonsWithContext } from '@/lib/services/network'
 import PersonCard from '@/components/PersonCard'
 import Link from 'next/link'
 import { signOut } from './actions'
+import { STATUS_LABEL } from '@/lib/constants/person'
 
-export default async function ContactsPage() {
+const STATUS_FILTERS: Array<{ value: string | undefined; label: string }> = [
+  { value: undefined, label: 'All' },
+  { value: 'potential', label: STATUS_LABEL.potential },
+  { value: 'planned', label: STATUS_LABEL.planned },
+  { value: 'active', label: STATUS_LABEL.active },
+  { value: 'nurture', label: STATUS_LABEL.nurture },
+  { value: 'dormant', label: STATUS_LABEL.dormant },
+]
+
+function buildUrl(params: Record<string, string | undefined>): string {
+  const search = new URLSearchParams()
+  Object.entries(params).forEach(([key, value]) => {
+    if (value) search.set(key, value)
+  })
+  const qs = search.toString()
+  return qs ? `?${qs}` : '/contacts'
+}
+
+export default async function ContactsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string; sort?: string }>
+}) {
+  const { status, sort } = await searchParams
+
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  const persons = await getPersonsWithContext(user!.id)
+  const persons = await getPersonsWithContext(user!.id, { status, sort })
 
   return (
     <main
@@ -88,20 +115,70 @@ export default async function ContactsPage() {
           </form>
         </div>
       </div>
+
+      <div
+        className="flex items-center flex-wrap"
+        style={{
+          gap: 'var(--space-2)',
+          marginTop: 'var(--space-5)',
+          marginBottom: 'var(--space-4)',
+        }}
+      >
+        {STATUS_FILTERS.map((filter) => {
+          const active = filter.value === status
+          return (
+            <Link
+              key={filter.label}
+              href={buildUrl({ status: filter.value, sort })}
+              style={{
+                background: active ? 'var(--color-primary)' : 'var(--bg-subtle)',
+                color: active ? 'var(--fg-on-primary)' : 'var(--fg-2)',
+                borderRadius: 'var(--radius-full)',
+                fontSize: 'var(--text-xs)',
+                fontWeight: 'var(--fw-medium)',
+                padding: '4px var(--space-3)',
+                textDecoration: 'none',
+              }}
+            >
+              {filter.label}
+            </Link>
+          )
+        })}
+
+        <Link
+          href={
+            sort === 'reach_out'
+              ? buildUrl({ status, sort: undefined })
+              : buildUrl({ status, sort: 'reach_out' })
+          }
+          style={{
+            fontSize: 'var(--text-xs)',
+            fontWeight: 'var(--fw-medium)',
+            color:
+              sort === 'reach_out' ? 'var(--color-primary)' : 'var(--fg-2)',
+            textDecoration: 'none',
+            padding: '4px var(--space-2)',
+          }}
+        >
+          {sort === 'reach_out' ? 'Sort: Reach out date' : 'Sort: Name'}
+        </Link>
+      </div>
+
       {persons.length === 0 ? (
         <p
           style={{
-            marginTop: 'var(--space-7)',
             fontSize: 'var(--text-base)',
             color: 'var(--fg-2)',
           }}
         >
-          No contacts yet. Add someone to get started.
+          {status
+            ? 'No contacts match this filter.'
+            : 'No contacts yet. Add someone to get started.'}
         </p>
       ) : (
         <div
           className="flex flex-col"
-          style={{ gap: 'var(--space-3)', marginTop: 'var(--space-6)' }}
+          style={{ gap: 'var(--space-3)' }}
         >
           {persons.map((person) => {
             const lastContactDate = person.last_contact_date

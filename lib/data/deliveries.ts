@@ -40,6 +40,25 @@ export async function getOverdueDeliveries(
   return data
 }
 
+export async function getDeliveryById(
+  id: string,
+  userId: string
+): Promise<DeliveryRow | null> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('deliveries')
+    .select('*')
+    .eq('id', id)
+    .eq('user_id', userId)
+    .single()
+
+  if (error && error.code !== 'PGRST116') {
+    throw new Error(`Failed to fetch delivery: ${error.message}`)
+  }
+  return data
+}
+
 export async function createDelivery(
   delivery: DeliveryInsert
 ): Promise<DeliveryRow> {

@@ -136,7 +136,13 @@ export async function getTodayData(userId: string): Promise<TodayData> {
       continue
     }
 
-    no_date.push(card)
+    // Only include in no_date if they have no deliveries AND no reach-out date
+    const hasDeliveries = card.deliveries.length > 0
+    const hasReachOutDate = card.next_reach_out_date !== null
+    if (!hasDeliveries && !hasReachOutDate) {
+      no_date.push(card)
+    }
+    // persons with future-dated items (beyond 7 days) don't appear on Today
   }
 
   const earliestOverdueDate = (card: PersonTodayCard): string => {

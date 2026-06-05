@@ -84,18 +84,16 @@ function ReachOutRow({ date, todayStr }: { date: string; todayStr: string }) {
   const past = date < todayStr
   return (
     <div className="flex items-center justify-between gap-3">
-      <span style={{ fontSize: 'var(--text-xs)', color: 'var(--fg-3)' }}>
-        Reach out
-      </span>
       <span
-        className="shrink-0"
         style={{
           fontSize: 'var(--text-xs)',
-          color: past ? 'var(--red-500)' : 'var(--fg-2)',
+          color: past ? 'var(--red-500)' : 'var(--fg-3)',
           whiteSpace: 'nowrap',
         }}
       >
-        {past ? `${daysOverdue(date)} days overdue` : formatDate(date)}
+        {past
+          ? `Reach out · ${daysOverdue(date)} days overdue`
+          : `Reach out · ${formatDate(date)}`}
       </span>
     </div>
   )

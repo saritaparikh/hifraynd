@@ -73,11 +73,6 @@ export default async function EditContactPage({
         style={{ gap: 'var(--space-5)', maxWidth: '480px' }}
       >
         <input type="hidden" name="person_id" value={person.id} />
-        <input
-          type="hidden"
-          name="next_reach_out_date"
-          value={person.next_reach_out_date ?? ''}
-        />
 
         <div>
           <label htmlFor="first_name" style={labelStyle}>
@@ -167,7 +162,33 @@ export default async function EditContactPage({
           />
         </div>
 
-<div>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-2)' }}>
+            <label htmlFor="next_reach_out_date" style={{ ...labelStyle, marginBottom: 0 }}>
+              Next reach out date
+            </label>
+            <span
+              title="Optional. Set this to override the automatic cadence calculation. Leave blank to let the cadence determine when to reach out."
+              style={{
+                fontSize: 'var(--text-xs)',
+                color: 'var(--fg-3)',
+                cursor: 'help',
+                borderBottom: '1px dotted var(--fg-3)',
+              }}
+            >
+              ?
+            </span>
+          </div>
+          <input
+            id="next_reach_out_date"
+            name="next_reach_out_date"
+            type="date"
+            defaultValue={person.next_reach_out_date ?? ''}
+            style={fieldStyle}
+          />
+        </div>
+
+        <div>
           <label htmlFor="how_we_met" style={labelStyle}>
             How we met
           </label>

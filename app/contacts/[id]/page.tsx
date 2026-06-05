@@ -325,18 +325,51 @@ export default async function ContactDetailPage({
                     )}
                   </div>
 
-                  {delivery.completed ? (
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span
-                        style={{
-                          fontSize: 'var(--text-xs)',
-                          color: 'var(--green-500)',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        Done ✓
-                      </span>
-                      <form action={reopenDelivery}>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <Link
+                      href={`/contacts/${person.id}/deliveries/${delivery.id}/edit`}
+                      style={{
+                        fontSize: 'var(--text-xs)',
+                        color: 'var(--fg-2)',
+                        textDecoration: 'none',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      Edit
+                    </Link>
+                    {delivery.completed ? (
+                      <>
+                        <span
+                          style={{
+                            fontSize: 'var(--text-xs)',
+                            color: 'var(--green-500)',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          Done ✓
+                        </span>
+                        <form action={reopenDelivery}>
+                          <input type="hidden" name="delivery_id" value={delivery.id} />
+                          <input type="hidden" name="person_id" value={person.id} />
+                          <button
+                            type="submit"
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              padding: 0,
+                              fontSize: 'var(--text-xs)',
+                              fontFamily: 'var(--font-body)',
+                              color: 'var(--fg-2)',
+                              cursor: 'pointer',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            Re-open
+                          </button>
+                        </form>
+                      </>
+                    ) : (
+                      <form action={markDeliveryDone}>
                         <input type="hidden" name="delivery_id" value={delivery.id} />
                         <input type="hidden" name="person_id" value={person.id} />
                         <button
@@ -352,31 +385,11 @@ export default async function ContactDetailPage({
                             whiteSpace: 'nowrap',
                           }}
                         >
-                          Re-open
+                          Mark done
                         </button>
                       </form>
-                    </div>
-                  ) : (
-                    <form action={markDeliveryDone} className="shrink-0">
-                      <input type="hidden" name="delivery_id" value={delivery.id} />
-                      <input type="hidden" name="person_id" value={person.id} />
-                      <button
-                        type="submit"
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          padding: 0,
-                          fontSize: 'var(--text-xs)',
-                          fontFamily: 'var(--font-body)',
-                          color: 'var(--fg-2)',
-                          cursor: 'pointer',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        Mark done
-                      </button>
-                    </form>
-                  )}
+                    )}
+                  </div>
                 </article>
               )
             })}
